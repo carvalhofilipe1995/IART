@@ -1,10 +1,7 @@
 package gui;
 
 import java.awt.Dimension;
-import java.awt.Point;
 import java.awt.Toolkit;
-import java.util.ArrayList;
-import java.util.Random;
 
 import javax.swing.JFrame;
 import javax.swing.UIManager;
@@ -12,7 +9,6 @@ import javax.swing.UnsupportedLookAndFeelException;
 import javax.swing.WindowConstants;
 
 import algorithm.Graph;
-import objects.Population;
 
 public class MainWindow extends JFrame {
 
@@ -22,9 +18,6 @@ public class MainWindow extends JFrame {
 	private static final long serialVersionUID = 1L;
 	private Graph g;
 	private Console console;
-	
-	private int numberOfPopulations;
-	private ArrayList<Population> populations = new ArrayList<Population>();
 
 	public MainWindow(Graph g) {
 		
@@ -34,15 +27,7 @@ public class MainWindow extends JFrame {
 				| IllegalAccessException | UnsupportedLookAndFeelException ex) {
 		}
 		
-		this.numberOfPopulations = 30;
-		
-		Random rand = new Random(); 
-		
-		// Randomize the coordinates of every population
-		for (int i = 0; i < this.numberOfPopulations; i++) {
-			Point p = new Point((int) (rand.nextInt(64)), (int) rand.nextInt(64));
-			this.populations.add(new Population(p));
-		}
+	
 		
 		this.g = g;
 		

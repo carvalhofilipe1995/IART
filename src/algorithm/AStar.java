@@ -1,7 +1,6 @@
 package algorithm;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 
 public class AStar {
 
@@ -16,73 +15,72 @@ public class AStar {
 		this.nodes = g.getNodes();
 	}
 
+	int hospitals_to_put = 3;
+
 	public void search() {
 
 		ArrayList<Node> closedSet = new ArrayList<Node>();
-
 		ArrayList<Node> openSet = new ArrayList<Node>();
 
-		HashMap<Node, Node> cameFrom = new HashMap<Node, Node>();
-		HashMap<Node, Double> gScore = new HashMap<Node, Double>();
-		HashMap<Node, Double> fScore = new HashMap<Node, Double>();
-
-		for (Node n : this.nodes) {
-			cameFrom.put(n, null);
-			gScore.put(n, Double.MAX_VALUE);
-			fScore.put(n, Double.MAX_VALUE);
-		}
-
-		gScore.put(nodes.get(0), (double) nodes.get(0).cost);
-		fScore.put(nodes.get(0), nodes.get(0).heuristic());
-
+		// Start with the first node
 		openSet.add(nodes.get(0));
 
 		while (!openSet.isEmpty()) {
+			
+			Node lowestFNode = retrieveLowestListValue(openSet);
 
-			Node current = retrieveLowestMapValue(fScore);
+			System.out.println("CurrentLowestNode -> " + lowestFNode);
 
-			openSet.remove(current);
-			closedSet.add(current);
+			openSet.remove(lowestFNode);
+			
+			// Added
+			openSet.clear();
+			//
 
-			for (Edge e : current.getEdges()) {
+			for (Edge e : lowestFNode.getEdges()) {
 
-				System.out.println(e.getDestination());
+				Node sucessor = e.getDestination();
 
-				if (!hasNode(closedSet, e.getDestination())) {
-					// Ver distancia possivelmente
-					double gScore_t = gScore.get(current);
+				// Added
+				if (!closedSet.contains(sucessor)) {
+				//
+					sucessor.setParent(lowestFNode);
+					sucessor.g = lowestFNode.g + e.getDistance() + e.getDestination().cost;
+					sucessor.h = sucessor.heuristic();
+					sucessor.f = sucessor.g + sucessor.h;
 
-					if (!hasNode(openSet, e.getDestination())) {
-						e.getDestination().addHospital();
-						openSet.add(e.getDestination());
-					} else if (gScore_t >= gScore.get(e.getDestination())) {
+					System.out.println("    -> Sucessor:" + sucessor + " | g: " + sucessor.g + " | h: " + sucessor.h
+							+ " | f: " + sucessor.f);
+
+					if (hasBetterF(openSet, sucessor))
 						continue;
-					}
 
-					cameFrom.put(e.getDestination(), current);
+					if (hasBetterF(closedSet, sucessor))
+						continue;
+					
+					
 
-					gScore.put(e.getDestination(), gScore_t);
+					openSet.add(sucessor);
 
-					fScore.put(e.getDestination(), gScore_t + e.getDestination().heuristic());
+				} else// Added
+					System.out.println("    -> Already visited: " + sucessor);
+					//
 
-				}
 			}
-		}
 
-		for (Node n : nodes) {
-			System.out.println(n.toString());
+			closedSet.add(lowestFNode);
 		}
 
 	}
 
-	public Node retrieveLowestMapValue(HashMap<Node, Double> hashmap) {
+	public Node retrieveLowestListValue(ArrayList<Node> openSet) {
 
 		Node toReturn = null;
 		double bestValueSoFar = Double.MAX_VALUE;
 
-		for (Node n : hashmap.keySet()) {
-			if (hashmap.get(n) < bestValueSoFar) {
-				bestValueSoFar = hashmap.get(n);
+		for (Node n : openSet) {
+			if (n.f < bestValueSoFar) {
+				bestValueSoFar = n.f;
 				toReturn = n;
 			}
 		}
@@ -92,13 +90,23 @@ public class AStar {
 	}
 
 	public boolean hasNode(ArrayList<Node> nodes, Node n) {
-		
+
 		for (Node node : nodes) {
-			if(node.getId() == n.getId())
+			if (node.getId() == n.getId())
 				return true;
 		}
-		
+
 		return false;
 	}
 
+	public boolean hasBetterF(ArrayList<Node> set, Node n) {
+
+		for (Node nset : set) {
+			if (nset.getId() == n.getId() && nset.f > n.f) {
+				return true;
+			}
+		}
+
+		return false;
+	}
 }

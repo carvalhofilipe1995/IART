@@ -4,6 +4,13 @@ import java.util.ArrayList;
 
 public class Node {
 
+	/*
+	 * Variables to f = g + h
+	 */
+	public double f = 0, g, h;
+
+	public int hospitals_used = 0;
+
 	// ID
 	private int id;
 
@@ -19,7 +26,6 @@ public class Node {
 	private boolean hasHospital = false;
 
 	public int cost;
-
 	private Node parent; // Parent of the current node
 
 	public Node(int id, int posx, int posy, int cost) {
@@ -27,6 +33,7 @@ public class Node {
 		this.pos_x = posx;
 		this.pos_y = posy;
 		this.cost = cost;
+		this.parent = null;
 	}
 
 	public void addEdge(Edge e) {
@@ -38,8 +45,9 @@ public class Node {
 		return Math.sqrt(Math.pow((this.pos_x - e.getPos_x()), 2) + Math.pow((this.pos_y - e.getPos_y()), 2));
 	}
 
-	public void addHospital() {
+	public void addHospital(int hospitalNumber) {
 		this.hasHospital = true;
+		this.hospitals_used = hospitalNumber;
 	}
 
 	public void removeHospital() {
@@ -52,6 +60,7 @@ public class Node {
 		double distance = 0.0;
 
 		for (Edge e : edges) {
+//			System.out.println("		Edge | Source -> " + e.getSource() + " | Destination -> " + e.getDestination());
 			if (!e.getDestination().hasHospital) {
 				distance += e.getDistance();
 				counter++;
@@ -129,11 +138,11 @@ public class Node {
 	}
 
 	public String toString() {
-		return "" + id + " hasHospitals: " + hasHospital;
-	}
 
-	public boolean equals(Object e) {
-		return this.id == ((Node) e).id;
+		if (parent != null)
+			return "" + id + " hasHospitals: " + hasHospital + ": from " + parent.id;
+		else
+			return "" + id + " hasHospitals: " + hasHospital;
 	}
 
 }
