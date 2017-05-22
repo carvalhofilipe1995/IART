@@ -1,6 +1,7 @@
 package algorithm;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 public class AStar {
 
@@ -17,57 +18,87 @@ public class AStar {
 
 	public void search() {
 
-		// Visited Nodes
 		ArrayList<Node> closedSet = new ArrayList<Node>();
 
-		// Start node
-		// Node openSet = nodes.get(0);
+		ArrayList<Node> openSet = new ArrayList<Node>();
 
-		// For each node, which node it can most efficiently be reached from.
-		// If a node can be reached from many nodes, cameFrom will eventually
-		// contain the
-		// most efficient previous step.
-		// Node cameFrom;
+		HashMap<Node, Node> cameFrom = new HashMap<Node, Node>();
+		HashMap<Node, Double> gScore = new HashMap<Node, Double>();
+		HashMap<Node, Double> fScore = new HashMap<Node, Double>();
 
-		double function = 0.0;
-
-		int i = 0;
-
-		while (nodes.size() != closedSet.size()) {
-
-			Node currentNode = nodes.get(i);
-
-			ArrayList<Double> functions_values = new ArrayList<>();
-
-			cost += currentNode.cost;
-
-			if (currentNode.isAnyNear()) {
-
-				for (int j = 0; j < currentNode.getEdges().size(); j++) {
-
-					function = cost + currentNode.getEdges().get(j).getDestination().cost
-							+ currentNode.getEdges().get(j).getDestination().heuristic();
-
-					functions_values.add(function);
-				}
-
-				int position = 0;
-				double maxValue = 0.0;
-
-				for (int k = 0; k < functions_values.size(); k++)
-					if (functions_values.get(k) > maxValue)
-						position = k;
-
-				currentNode.getEdges().get(position).getDestination().removeHospital();
-
-				cost += currentNode.getEdges().get(position).getDestination().cost;
-			} 
-
-			closedSet.add(currentNode);
-			i++;
-
+		for (Node n : this.nodes) {
+			cameFrom.put(n, null);
+			gScore.put(n, Double.MAX_VALUE);
+			fScore.put(n, Double.MAX_VALUE);
 		}
 
+		gScore.put(nodes.get(0), (double) nodes.get(0).cost);
+		fScore.put(nodes.get(0), nodes.get(0).heuristic());
+
+		openSet.add(nodes.get(0));
+
+		while (!openSet.isEmpty()) {
+
+			Node current = retrieveLowestMapValue(fScore);
+
+			openSet.remove(current);
+			closedSet.add(current);
+
+			for (Edge e : current.getEdges()) {
+
+				System.out.println(e.getDestination());
+
+				if (!hasNode(closedSet, e.getDestination())) {
+					// Ver distancia possivelmente
+					double gScore_t = gScore.get(current);
+
+					if (!hasNode(openSet, e.getDestination())) {
+						e.getDestination().addHospital();
+						openSet.add(e.getDestination());
+					} else if (gScore_t >= gScore.get(e.getDestination())) {
+						continue;
+					}
+
+					cameFrom.put(e.getDestination(), current);
+
+					gScore.put(e.getDestination(), gScore_t);
+
+					fScore.put(e.getDestination(), gScore_t + e.getDestination().heuristic());
+
+				}
+			}
+		}
+
+		for (Node n : nodes) {
+			System.out.println(n.toString());
+		}
+
+	}
+
+	public Node retrieveLowestMapValue(HashMap<Node, Double> hashmap) {
+
+		Node toReturn = null;
+		double bestValueSoFar = Double.MAX_VALUE;
+
+		for (Node n : hashmap.keySet()) {
+			if (hashmap.get(n) < bestValueSoFar) {
+				bestValueSoFar = hashmap.get(n);
+				toReturn = n;
+			}
+		}
+
+		return toReturn;
+
+	}
+
+	public boolean hasNode(ArrayList<Node> nodes, Node n) {
+		
+		for (Node node : nodes) {
+			if(node.getId() == n.getId())
+				return true;
+		}
+		
+		return false;
 	}
 
 }

@@ -16,7 +16,7 @@ public class Node {
 
 	// Boolean to check if every node has a hospital
 	// Initially every Town has a hospital allocated
-	private boolean hasHospital = true;
+	private boolean hasHospital = false;
 
 	public int cost;
 
@@ -30,7 +30,8 @@ public class Node {
 	}
 
 	public void addEdge(Edge e) {
-		this.edges.add(e);
+		if (!edges.contains(e))
+			this.edges.add(e);
 	}
 
 	public double getDistance(Node e) {
@@ -47,13 +48,17 @@ public class Node {
 
 	public double heuristic() {
 
-		double toReturn = Double.MAX_VALUE;
+		int counter = 1;
+		double distance = 0.0;
 
-		for (Edge e : edges)
-			if (e.getDistance() < toReturn)
-				toReturn = e.getDistance();
+		for (Edge e : edges) {
+			if (!e.getDestination().hasHospital) {
+				distance += e.getDistance();
+				counter++;
+			}
+		}
 
-		return toReturn;
+		return distance / counter;
 	}
 
 	public boolean isAnyNear() {
@@ -68,7 +73,7 @@ public class Node {
 	}
 
 	public void finalCheck() {
-		
+
 		for (int i = 0; i < this.edges.size(); i++)
 			if (this.edges.get(i).getDistance() <= 10.0)
 				this.hasHospital = true;
@@ -125,6 +130,10 @@ public class Node {
 
 	public String toString() {
 		return "" + id + " hasHospitals: " + hasHospital;
+	}
+
+	public boolean equals(Object e) {
+		return this.id == ((Node) e).id;
 	}
 
 }
