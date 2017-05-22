@@ -11,6 +11,7 @@ import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 import javax.swing.WindowConstants;
 
+import algorithm.Graph;
 import objects.Population;
 
 public class MainWindow extends JFrame {
@@ -19,12 +20,13 @@ public class MainWindow extends JFrame {
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
+	private Graph g;
 	private Console console;
 	
 	private int numberOfPopulations;
 	private ArrayList<Population> populations = new ArrayList<Population>();
 
-	public MainWindow() {
+	public MainWindow(Graph g) {
 		
 		try {
 			UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
@@ -42,7 +44,9 @@ public class MainWindow extends JFrame {
 			this.populations.add(new Population(p));
 		}
 		
-		this.console = new Console(populations);
+		this.g = g;
+		
+		this.console = new Console(this.g.getNodes());
 		getContentPane().add(console);
 		
 		setTitle("A2: Pesquisa aplicada à localização de unidades de saúde");

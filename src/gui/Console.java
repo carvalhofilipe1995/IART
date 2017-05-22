@@ -7,7 +7,7 @@ import java.util.ArrayList;
 
 import javax.swing.JPanel;
 
-import objects.Population;
+import algorithm.Node;
 
 public class Console extends JPanel {
 
@@ -15,10 +15,10 @@ public class Console extends JPanel {
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
-	private ArrayList<Population> populations = new ArrayList<Population>();
+	private ArrayList<Node> nodes = new ArrayList<Node>();
 
-	public Console(ArrayList<Population> populations) {
-		this.populations = populations;
+	public Console(ArrayList<Node> nodes) {
+		this.nodes = nodes;
 	}
 
 	@Override
@@ -31,12 +31,12 @@ public class Console extends JPanel {
 	public void draw(Graphics2D g2d) {
 
 		// Drawing populations
-		for (int i = 0; i < populations.size(); i++)
-			drawPopulations(g2d, populations.get(i));
+		for (int i = 0; i < nodes.size(); i++)
+			drawPopulations(g2d, nodes.get(i));
 
 	}
 
-	public void drawPopulations(Graphics2D g, Population p) {
+	public void drawPopulations(Graphics2D g, Node n) {
 
 		int sizeX, sizeY;
 
@@ -45,9 +45,15 @@ public class Console extends JPanel {
 		else
 			sizeX = sizeY = getWidth() / 64;
 
-		g.setColor(Color.GRAY);
-		g.fillOval(p.getCoordinates().x * sizeX + (getWidth() - sizeX * 64) / 2,
-				p.getCoordinates().y * sizeY + (getHeight() - sizeX * 64) / 2, sizeX, sizeY);
+		if (n.hasHospital()) {
+			g.setColor(Color.BLUE);
+			g.fillOval(n.getPos_x() * sizeX + (getWidth() - sizeX * 64) / 2,
+					n.getPos_y() * sizeY + (getHeight() - sizeX * 64) / 2, sizeX, sizeY);
+		} else {
+			g.setColor(Color.GRAY);
+			g.fillOval(n.getPos_x() * sizeX + (getWidth() - sizeX * 64) / 2,
+					n.getPos_y() * sizeY + (getHeight() - sizeX * 64) / 2, sizeX, sizeY);
+		}
 
 	}
 
