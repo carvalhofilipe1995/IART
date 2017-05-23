@@ -9,6 +9,8 @@ public class Node {
 	 */
 	public double f = 0, g, h;
 
+	ArrayList<String> connectionsMade = new ArrayList<String>();
+
 	public int hospitals_used = 0;
 
 	// ID
@@ -21,11 +23,14 @@ public class Node {
 	// Edges
 	private ArrayList<Edge> edges = new ArrayList<Edge>();
 
+	// Visited Nodes
+	private ArrayList<Node> visitedNodes = new ArrayList<Node>();
+
 	// Boolean to check if every node has a hospital
-	// Initially every Town has a hospital allocated
+	// Initially every Town hasn't a hospital allocated
 	private boolean hasHospital = false;
 
-	public int cost;
+	public double cost;
 	private Node parent; // Parent of the current node
 
 	public Node(int id, int posx, int posy, int cost) {
@@ -34,6 +39,26 @@ public class Node {
 		this.pos_y = posy;
 		this.cost = cost;
 		this.parent = null;
+		this.connectionsMade.add("" + id);
+	}
+
+	public Node(Node n) {
+		this.id = n.id;
+		this.pos_x = n.pos_x;
+		this.pos_y = n.pos_y;
+		this.cost = n.cost;
+		this.parent = n.parent;
+		this.edges = n.edges;
+		this.hasHospital = n.hasHospital;
+		this.g = n.g;
+		this.f = n.f;
+		this.h = n.h;
+		this.hospitals_used = n.hospitals_used;
+		this.connectionsMade = n.connectionsMade;
+
+		if (!connectionsMade.contains("" + id))
+			connectionsMade.add("" + id);
+
 	}
 
 	public void addEdge(Edge e) {
@@ -54,20 +79,83 @@ public class Node {
 		this.hasHospital = false;
 	}
 
-	public double heuristic() {
+	public ArrayList<Node> getVisitedNodes() {
+		return this.visitedNodes;
+	}
 
-		int counter = 1;
-		double distance = 0.0;
+	public void addVisitedNode(Node e) {
+		this.visitedNodes.add(e);
+	}
 
-		for (Edge e : edges) {
-//			System.out.println("		Edge | Source -> " + e.getSource() + " | Destination -> " + e.getDestination());
-			if (!e.getDestination().hasHospital) {
-				distance += e.getDistance();
-				counter++;
+	public double heuristic(ArrayList<Node> allNodes) {
+
+		double distance = Double.MIN_VALUE;
+
+		Node n = this;
+
+		for (Node _n : allNodes)
+			if (n.getDistance(_n) > distance && !_n.hasHospital)
+				distance = n.getDistance(_n);
+
+		double total_cost = 0.0;
+
+		for (Node _n : allNodes)
+			total_cost += _n.getCost();
+
+		return (distance / 20) + (total_cost / allNodes.size());
+	}
+
+	public double getSmallestDistance(ArrayList<Node> allNodes, ArrayList<Node> withHospital) {
+
+		ArrayList<Node> withoutHospital = new ArrayList<Node>();
+		double allDistance = 0;
+		double counter = 1;
+
+		for (Node n : allNodes) {
+			boolean canAdd = true;
+			for (Node an : withHospital) {
+
+				if (n.id == an.id) {
+					canAdd = false;
+					break;
+				}
 			}
+			if (canAdd)
+				withoutHospital.add(n);
 		}
 
-		return distance / counter;
+		for (Node n : withoutHospital) {
+
+			double distance = Double.MAX_VALUE;
+
+			for (Node _n : withHospital) {
+
+				double d = n.getDistance(_n);
+
+				if (d < distance)
+					distance = n.getDistance(_n);
+
+			}
+
+			allDistance += distance;
+			counter += 1;
+
+		}
+
+		if (Double.isInfinite(allDistance))
+			allDistance = 5000;
+
+		return allDistance / counter;
+	}
+
+	public double getDistanceToNode(Node n) {
+
+		for (Edge e : edges) {
+			if (e.getDestination().id == n.id)
+				return e.getDistance();
+		}
+
+		return 0;
 	}
 
 	public boolean isAnyNear() {
@@ -140,9 +228,19 @@ public class Node {
 	public String toString() {
 
 		if (parent != null)
-			return "" + id + " hasHospitals: " + hasHospital + ": from " + parent.id;
+			return "[F:" + f + "] Node: " + id + " hasHospitals: " + hasHospital + " number_of_hospitals: "
+					+ this.hospitals_used + " from: " + parent.id;
 		else
-			return "" + id + " hasHospitals: " + hasHospital;
+			return "[F:" + f + "] Node: " + id + " hasHospitals: " + hasHospital + " number_of_hospitals: "
+					+ this.hospitals_used;
+	}
+
+	public double getCost() {
+
+		if (hasHospital)
+			return g + cost;
+		else
+			return g;
 	}
 
 }

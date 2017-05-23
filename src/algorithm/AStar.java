@@ -8,8 +8,6 @@ public class AStar {
 
 	public ArrayList<Node> nodes;
 
-	public int cost = -1137;
-
 	public AStar(Graph g) {
 		this.graph = g;
 		this.nodes = g.getNodes();
@@ -26,27 +24,29 @@ public class AStar {
 		openSet.add(nodes.get(0));
 
 		while (!openSet.isEmpty()) {
-			
+
 			Node lowestFNode = retrieveLowestListValue(openSet);
+
+			if (closedSet.size() > 0 && closedSet.get(closedSet.size() - 1).getVisitedNodes().contains(lowestFNode))
+				continue;
+
+			if (closedSet.size() > 0)
+				closedSet.get(closedSet.size() - 1).addVisitedNode(lowestFNode);
+			
+			if (lowestFNode.hospitals_used == 3)
+				break;
 
 			System.out.println("CurrentLowestNode -> " + lowestFNode);
 
 			openSet.remove(lowestFNode);
-			
-			// Added
-			openSet.clear();
-			//
 
-			for (Edge e : lowestFNode.getEdges()) {
+			for (Node sucessor : createSucessores(lowestFNode)) {
 
-				Node sucessor = e.getDestination();
+				if (!hasNode(closedSet, sucessor)) {
 
-				// Added
-				if (!closedSet.contains(sucessor)) {
-				//
 					sucessor.setParent(lowestFNode);
-					sucessor.g = lowestFNode.g + e.getDistance() + e.getDestination().cost;
-					sucessor.h = sucessor.heuristic();
+					sucessor.g = lowestFNode.g + sucessor.getCost() + lowestFNode.getDistance(sucessor);
+					sucessor.h = sucessor.heuristic(graph.getNodes()) / (sucessor.hospitals_used + 1);
 					sucessor.f = sucessor.g + sucessor.h;
 
 					System.out.println("    -> Sucessor:" + sucessor + " | g: " + sucessor.g + " | h: " + sucessor.h
@@ -57,14 +57,9 @@ public class AStar {
 
 					if (hasBetterF(closedSet, sucessor))
 						continue;
-					
-					
 
 					openSet.add(sucessor);
-
-				} else// Added
-					System.out.println("    -> Already visited: " + sucessor);
-					//
+				}
 
 			}
 
@@ -92,7 +87,8 @@ public class AStar {
 	public boolean hasNode(ArrayList<Node> nodes, Node n) {
 
 		for (Node node : nodes) {
-			if (node.getId() == n.getId())
+			if (node.getId() == n.getId() && n.getParent() == node.getParent()
+					&& n.hospitals_used == node.hospitals_used)
 				return true;
 		}
 
@@ -102,11 +98,36 @@ public class AStar {
 	public boolean hasBetterF(ArrayList<Node> set, Node n) {
 
 		for (Node nset : set) {
+
 			if (nset.getId() == n.getId() && nset.f > n.f) {
 				return true;
 			}
 		}
 
 		return false;
+	}
+
+	public ArrayList<Node> createSucessores(Node n) {
+
+		ArrayList<Node> sucessores = new ArrayList<Node>();
+
+		for (Edge e : n.getEdges()) {
+
+			Node _WithHospital = new Node(e.getDestination());
+			_WithHospital.setParent(n);
+			_WithHospital.setHasHospital(true);
+			_WithHospital.hospitals_used++;
+
+			sucessores.add(_WithHospital);
+
+			Node _WithoutHospital = new Node(e.getDestination());
+			_WithoutHospital.setParent(n);
+			_WithoutHospital.setHasHospital(false);
+
+			sucessores.add(_WithoutHospital);
+
+		}
+
+		return sucessores;
 	}
 }

@@ -17,8 +17,7 @@ public class Graph {
 
 	public void connectAllNodes() {
 
-		for (int i = 0; i < this.nodes.size(); i++) {
-
+		for (int i = 0; i < this.nodes.size(); i++)
 			for (int j = i + 1; j < this.nodes.size(); j++) {
 
 				double distance = this.nodes.get(i).getDistance(this.nodes.get(j));
@@ -30,8 +29,6 @@ public class Graph {
 				this.edges.add(f);
 
 			}
-
-		}
 
 	}
 
@@ -56,23 +53,18 @@ public class Graph {
 
 		ArrayList<Node> nodes = new ArrayList<Node>();
 		Node n1 = new Node(1, 1, 1, 1);
-		Node n2 = new Node(2, 2, 2, 0);
-		Node n3 = new Node(3, 10, 10, 12);
-
-		Node n4 = new Node(4, 4, 4, 1);
-
-		Node n5 = new Node(5, 21, 21, 3);
-		Node n6 = new Node(6, 22, 22, 4);
-		Node n7 = new Node(7, 23, 23, 5);
-
+		Node n2 = new Node(2, 2, 2, 8);
+		Node n3 = new Node(3, 3, 3, 12);
+		Node n4 = new Node(4, 20, 20, 50);
+		Node n5 = new Node(5, 30, 30, 100);
+		
+		
 		nodes.add(n1);
 		nodes.add(n2);
-
 		nodes.add(n3);
 		nodes.add(n4);
 		nodes.add(n5);
-		nodes.add(n6);
-		nodes.add(n7);
+		
 
 		Graph g = new Graph(nodes);
 		g.connectAllNodes();
