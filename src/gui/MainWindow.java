@@ -2,13 +2,14 @@ package gui;
 
 import java.awt.Dimension;
 import java.awt.Toolkit;
+import java.util.ArrayList;
 
 import javax.swing.JFrame;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 import javax.swing.WindowConstants;
 
-import algorithm.Graph;
+import algorithm.Node;
 
 public class MainWindow extends JFrame {
 
@@ -16,10 +17,10 @@ public class MainWindow extends JFrame {
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
-	private Graph g;
+	private ArrayList<Node> nodes = new ArrayList<Node>();
 	private Console console;
 
-	public MainWindow(Graph g) {
+	public MainWindow(ArrayList<Node> nodes) {
 		
 		try {
 			UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
@@ -29,9 +30,9 @@ public class MainWindow extends JFrame {
 		
 	
 		
-		this.g = g;
+		this.nodes = nodes;
 		
-		this.console = new Console(this.g.getNodes());
+		this.console = new Console(this.nodes);
 		getContentPane().add(console);
 		
 		setTitle("A2: Pesquisa aplicada à localização de unidades de saúde");

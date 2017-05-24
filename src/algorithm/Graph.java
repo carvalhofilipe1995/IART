@@ -2,8 +2,6 @@ package algorithm;
 
 import java.util.ArrayList;
 
-import gui.MainWindow;
-
 public class Graph {
 
 	// Node objects that constitute this Graph object
@@ -52,28 +50,18 @@ public class Graph {
 	public static void main(String[] args) {
 
 		ArrayList<Node> nodes = new ArrayList<Node>();
-		Node n1 = new Node(1, 1, 1, 1);
-		Node n2 = new Node(2, 2, 2, 8);
-		Node n3 = new Node(3, 3, 3, 12);
-		Node n4 = new Node(4, 20, 20, 50);
-		Node n5 = new Node(5, 30, 30, 100);
+
+		for (int i = 0; i < 4; i++)
+			nodes.add(new Node(i, i, i, i));
 		
-		
-		nodes.add(n1);
-		nodes.add(n2);
-		nodes.add(n3);
-		nodes.add(n4);
-		nodes.add(n5);
-		
+		nodes.add(new Node(4,30,30,1));
 
 		Graph g = new Graph(nodes);
 		g.connectAllNodes();
 
 		AStar a = new AStar(g);
 		a.search();
-
-		MainWindow m = new MainWindow(g);
-		m.startFrame();
+		a.show();
 
 	}
 
