@@ -37,6 +37,9 @@ public class Console extends JPanel {
 	}
 
 	public void drawPopulations(Graphics2D g, Node n) {
+		
+		if(n.getId()==0)
+			return;
 
 		int sizeX, sizeY;
 

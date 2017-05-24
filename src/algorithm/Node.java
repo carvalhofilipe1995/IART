@@ -90,20 +90,6 @@ public class Node {
 
 	public double heuristic(ArrayList<Node> allNodes) {
 
-		/*
-		 * double distance = Double.MIN_VALUE;
-		 * 
-		 * Node n = this;
-		 * 
-		 * for (Node _n : allNodes) if (n.getDistance(_n) > distance &&
-		 * !_n.hasHospital) distance = n.getDistance(_n);
-		 * 
-		 * double total_cost = 0.0;
-		 * 
-		 * for (Node _n : allNodes) total_cost += _n.getCost(n);
-		 * 
-		 * return (distance / 20) + (total_cost / allNodes.size());
-		 */
 		ArrayList<Node> withHospital = new ArrayList<Node>();
 
 		Node n = this;
@@ -183,13 +169,6 @@ public class Node {
 		}
 
 		return false;
-	}
-
-	public void finalCheck() {
-
-		for (int i = 0; i < this.edges.size(); i++)
-			if (this.edges.get(i).getDistance() <= 10.0)
-				this.hasHospital = true;
 	}
 
 	// Getters and Setters

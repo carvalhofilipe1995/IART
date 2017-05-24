@@ -20,8 +20,6 @@ public class AStar {
 		this.toShow = this.nodes;
 	}
 
-	int hospitals_to_put = 5;
-
 	public void search() {
 
 		// Start with the first node
@@ -37,7 +35,7 @@ public class AStar {
 
 			for (Node sucessor : createSucessores(lowestFNode)) {
 
-				if (sucessor.hospitals_used == 5) {
+				if (sucessor.hospitals_used == 10) {
 					while (sucessor.getParent() != null) {
 						
 						sucessor = sucessor.getParent();
@@ -57,7 +55,7 @@ public class AStar {
 					sucessor.h = sucessor.heuristic(graph.getNodes());
 					sucessor.f = sucessor.g + sucessor.h;
 
-					System.out.println("    -> Sucessor:" + sucessor + " | g: " + sucessor.g + " | h: " + sucessor.h);
+					System.out.println("    -> Sucessor:" + sucessor + " | g: " + sucessor.g + " | h: " + sucessor.h + " | Distance: " + lowestFNode.getDistance(sucessor));
 
 					if (hasBetterF(openSet, sucessor))
 						continue;

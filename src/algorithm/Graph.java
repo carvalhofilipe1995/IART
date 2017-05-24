@@ -1,6 +1,7 @@
 package algorithm;
 
 import java.util.ArrayList;
+import java.util.Random;
 
 public class Graph {
 
@@ -12,6 +13,10 @@ public class Graph {
 	public Graph(ArrayList<Node> nodes) {
 		this.nodes = nodes;
 	}
+	
+	
+	
+	
 
 	public void connectAllNodes() {
 
@@ -50,11 +55,15 @@ public class Graph {
 	public static void main(String[] args) {
 
 		ArrayList<Node> nodes = new ArrayList<Node>();
-
-		for (int i = 0; i < 4; i++)
-			nodes.add(new Node(i, i, i, i));
 		
-		nodes.add(new Node(4,30,30,1));
+		// EXPERIENCE 1	
+		nodes.add(new Node(0, 0, 0, 0));
+		
+		Random r = new Random();
+		
+		for(int i=1; i!=11; i++){
+			nodes.add(new Node(i, r.nextInt(63), r.nextInt(63), r.nextInt(2)+1));
+		}
 
 		Graph g = new Graph(nodes);
 		g.connectAllNodes();
