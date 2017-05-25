@@ -6,6 +6,8 @@ import gui.MainWindow;
 
 public class AStar {
 
+	private int hospitals;
+
 	public Graph graph;
 
 	public ArrayList<Node> nodes;
@@ -18,6 +20,25 @@ public class AStar {
 		this.graph = g;
 		this.nodes = g.getNodes();
 		this.toShow = this.nodes;
+		this.hospitals = numberHospitalsToPut() + 1;
+	}
+
+	public int numberHospitalsToPut() {
+
+		ArrayList<Node> trash = this.nodes;
+
+		int number = 0;
+
+		double max_value = 0;
+
+		for (int i = 0; i < trash.size(); i++)
+			if (trash.get(0).getDistance(trash.get(i)) > max_value)
+				max_value = trash.get(0).getDistance(trash.get(i));
+
+		number += Math.ceil(max_value / 10);
+
+		return number;
+
 	}
 
 	public void search() {
@@ -35,18 +56,18 @@ public class AStar {
 
 			for (Node sucessor : createSucessores(lowestFNode)) {
 
-				if (sucessor.hospitals_used == 10) {
+				if (sucessor.hospitals_used == hospitals) {
 					while (sucessor.getParent() != null) {
-						
+
 						sucessor = sucessor.getParent();
-						
+
 						for (int i = 0; i < toShow.size(); i++)
 							if (toShow.get(i).getId() == sucessor.getId()) {
 								toShow.remove(i);
 								toShow.add(sucessor);
 								break;
 							}
-						
+
 					}
 					return;
 				}
@@ -55,7 +76,8 @@ public class AStar {
 					sucessor.h = sucessor.heuristic(graph.getNodes());
 					sucessor.f = sucessor.g + sucessor.h;
 
-					System.out.println("    -> Sucessor:" + sucessor + " | g: " + sucessor.g + " | h: " + sucessor.h + " | Distance: " + lowestFNode.getDistance(sucessor));
+					System.out.println("    -> Sucessor:" + sucessor + " | g: " + sucessor.g + " | h: " + sucessor.h
+							+ " | Distance: " + lowestFNode.getDistance(sucessor));
 
 					if (hasBetterF(openSet, sucessor))
 						continue;
@@ -67,7 +89,7 @@ public class AStar {
 				}
 
 			}
-			
+
 			System.out.println("\n");
 
 			closedSet.add(lowestFNode);

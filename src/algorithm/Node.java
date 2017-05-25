@@ -93,6 +93,7 @@ public class Node {
 		ArrayList<Node> withHospital = new ArrayList<Node>();
 
 		Node n = this;
+		
 		if (n.hasHospital)
 			withHospital.add(this);
 
