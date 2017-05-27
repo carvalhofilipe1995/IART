@@ -2,11 +2,11 @@
 
 A2: Pesquisa aplicada à localização de unidades de saúde
 
-##Objectivo
+## Objectivo
 
 Determinar a melhor localização de um conjunto de unidades de saúde, minimizando o seu custo e otimizando o serviço prestado à população.
 
-##Descrição
+## Descrição
 
 A localização de uma unidade de saúde deve ser objeto de uma análise criteriosa, pois não só a sua implementação e funcionamento tem um custo elevado, como deve ser de fácil acesso para a população. Neste trabalho, pretende- se determinar a localização ótima de unidades de saúde numa região constituída por múltiplas localidades. Considere que qualquer localidade deve estar a uma distância menor ou igual a um valor máximo a especificar da unidade de saúde mais próxima.
 
