@@ -1,6 +1,4 @@
-# astar_algorithm_iart
-
-A2: Pesquisa aplicada à localização de unidades de saúde
+# A2: Pesquisa aplicada à localização de unidades de saúde
 
 ## Objectivo
 
